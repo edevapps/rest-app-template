@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/messages")
@@ -25,8 +26,10 @@ public class MessagesController {
     }
 
     @GetMapping
-    public List<Message> findAllMessages() {
-        return  this.messageProvider.getAllMessages();
+    public List<MessageDto> findAllMessages() {
+        return  this.messageProvider.getAllMessages().stream()
+                .map(message -> this.conversion.convert(message, MessageDto.class))
+                .collect(Collectors.toList());
     }
 
     @PostMapping
